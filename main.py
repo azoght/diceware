@@ -15,6 +15,12 @@ def tsvtoList(filename) -> []:
 
 dicewareWords = tsvtoList("officialDicewareWordList.tsv")
 
+def contains(list,item) -> bool:
+    for i in list:
+        if i == item:
+            return True
+    return False
+
 def randomizeWordList(wordlist: []) -> []:
     for i in range(len(wordlist)):
         s1 = random.randint(0,(len(wordlist)-1))
@@ -48,12 +54,11 @@ def listToString(s):
 
 def randomCapitalizer(password: str) -> str:
     password = [char for char in password]
-    cleanedpassword = []
-    for p in password:
-        if p != " ":
-            cleanedpassword.append(p)
-    password = cleanedpassword
-    del cleanedpassword
+    p = 0
+    while p < len(password):
+        if password[p] == " ":
+            del password[p]
+        p += 1
     numOfChars = random.randint(1, int(len(password) / 2))
     for n in range(numOfChars):
         place = random.randint(0,(len(password)-1))
@@ -63,19 +68,40 @@ def randomCapitalizer(password: str) -> str:
 
 
 def randomCharacterReplacer(password: str) -> str:
-    chars = ["!","@","#","$","%","&","*","+","?","/","~","=","-","^","_","."," "]
+    chars = ["!","@","#","$","%","&","*","+","?","/","~","=","-","^","_","."]
     password = [char for char in password]
-    cleanedpassword = []
-    for p in password:
-        if p != " ":
-            cleanedpassword.append(p)
-    password = cleanedpassword
-    del cleanedpassword
+    p = 0
+    while p < len(password):
+        if password[p] == " ":
+            del password[p]
+        p += 1
     numOfChars = random.randint(1,int(len(password)/2.5))
     for n in range(numOfChars):
         char = random.randint(0,(len(chars)-1))
         place = random.randint(0,(len(password)-1))
         password[place] = chars[char]
+    password = listToString(password)
+    return password
+
+def randomlyShortenToMaximum(password: str) -> str:
+    charsToRemove = len(password) - 12
+    removedChars = []
+    while len(removedChars) <= charsToRemove:
+        place = random.randint(0,(len(password)-1))
+        if not contains(removedChars,place):
+            removedChars.append(place)
+
+    removedChars.sort(reverse=True)
+
+    password = [char for char in password]
+    p = len(password) -1
+    while len(password) >= 12:
+        if contains(removedChars,p):
+            del password[p]
+            del removedChars[0]
+            p +=1
+        p -= 1
+
     password = listToString(password)
     return password
 
@@ -91,6 +117,6 @@ p = randomCharacterReplacer(p)
 
 print(p)
 
-# p = abs(int(hash(p)/100000))
+p = randomlyShortenToMaximum(p)
 
-# print(p)
+print(p)
