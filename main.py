@@ -15,20 +15,7 @@ def tsvtoList(filename) -> []:
 
 dicewareWords = tsvtoList("officialDicewareWordList.tsv")
 
-def contains(list,item) -> bool:
-    for i in list:
-        if i == item:
-            return True
-    return False
-
-def randomizeWordList(wordlist: []) -> []:
-    for i in range(len(wordlist)):
-        s1 = random.randint(0,(len(wordlist)-1))
-        s2 = random.randint(0, (len(wordlist) - 1))
-        wordlist[s1][1], wordlist[s2][1] = wordlist[s2][1], wordlist[s1][1]
-    return wordlist
-
-dicewareWords = randomizeWordList(dicewareWords)
+random.shuffle(dicewareWords)
 
 def generatePassword(n: int,wordlist: []) -> str:
     p = ""
@@ -48,10 +35,6 @@ def generatePassword(n: int,wordlist: []) -> str:
     return p
 
 
-def listToString(s):
-    str1 = ""
-    return (str1.join(s))
-
 def randomCapitalizer(password: str) -> str:
     password = [char for char in password]
     p = 0
@@ -62,8 +45,8 @@ def randomCapitalizer(password: str) -> str:
     numOfChars = random.randint(1, int(len(password) / 2))
     for n in range(numOfChars):
         place = random.randint(0,(len(password)-1))
-        password[place] = password[place].capitalize()
-    password = listToString(password)
+        password[place] = password[place].upper()
+    password = "".join(password)
     return password
 
 
@@ -80,7 +63,7 @@ def randomCharacterReplacer(password: str) -> str:
         char = random.randint(0,(len(chars)-1))
         place = random.randint(0,(len(password)-1))
         password[place] = chars[char]
-    password = listToString(password)
+    password = "".join(password)
     return password
 
 def randomlyShortenToMaximum(password: str) -> str:
@@ -88,21 +71,21 @@ def randomlyShortenToMaximum(password: str) -> str:
     removedChars = []
     while len(removedChars) <= charsToRemove:
         place = random.randint(0,(len(password)-1))
-        if not contains(removedChars,place):
+        if not place in removedChars:
             removedChars.append(place)
 
-    removedChars.sort(reverse=True)
+    removedChars = sorted(removedChars)[::-1]
 
     password = [char for char in password]
     p = len(password) -1
     while len(password) >= 12:
-        if contains(removedChars,p):
+        if p in removedChars:
             del password[p]
             del removedChars[0]
             p +=1
         p -= 1
 
-    password = listToString(password)
+    password = "".join(password)
     return password
 
 p = generatePassword(5,dicewareWords)
